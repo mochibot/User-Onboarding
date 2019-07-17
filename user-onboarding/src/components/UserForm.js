@@ -23,13 +23,21 @@ const UserForm = ({ values, errors, touched, isSubmitting }) => {
           <Field type='password' name='password' placeholder='Enter password...'></Field>
           {touched.password && errors.password && <p className='form-error'>{errors.password}</p>}
         </div>
-        {/*
         <div className='form-field'>
           <label>Confirm password:</label>
-          <Field name='passwordConfirmation' placeholder='Confirm password...'></Field>
+          <Field type='password' name='passwordConfirmation' placeholder='Confirm password...'></Field>
           {touched.passwordConfirmation && errors.passwordConfirmation && <p className='form-error'>{errors.passwordConfirmation}</p>}
         </div>
-        */}
+        <div className='form-dropdown'>
+          <label>Role: </label>
+          <Field component="select" name="role">
+            <option value="" disabled>Select a role</option>
+            <option value="student">Student</option>
+            <option value="professional">Professional</option>
+            <option value="other">Other</option>
+          </Field>
+          {touched.role && errors.role && <p className='form-error'>{errors.role}</p>}
+        </div>
         <div className='form-terms'>
           <label>
             <Field type='checkbox' name='terms' checked={values.terms}></Field>
@@ -37,20 +45,21 @@ const UserForm = ({ values, errors, touched, isSubmitting }) => {
           </label>
           {touched.terms && errors.terms && <p className='form-error'>{errors.terms}</p>} 
         </div>
-        <button disabled={isSubmitting}>Submit</button>
+        <button disabled={isSubmitting}>SUBMIT</button>
       </Form>
     </div>
   )
 }
 
 export default withFormik({
-  mapPropsToValues: ({ name, email, password, passwordConfirmation, terms }) => {
+  mapPropsToValues: ({ name, email, password, passwordConfirmation, terms, role }) => {
     return {
       name: name || '',
       email: email || '',
       password: password || '',
       passwordConfirmation: passwordConfirmation || '',
-      terms: terms || false
+      terms: terms || false,
+      role: role || ''
     }
   },
   
@@ -58,9 +67,10 @@ export default withFormik({
     name: Yup.string().required('Name is required'),
     email: Yup.string().email('Not a valid email').required('Email is required'),
     password: Yup.string().min(6, 'Password must contain at least 6 characters').required('Password is required'),
-    /*passwordConfirmation: Yup.string().oneOf([values.password], 'Passwords are not the same!')
-    .required('Password confirmation is required!'), */
-    terms: Yup.bool().test('terms', 'You have to agree to our Terms and Conditions!', value => value === true)
+    passwordConfirmation: Yup.string().oneOf([Yup.ref('password')], 'Passwords are not the same!')
+    .required('Password confirm is required!'), 
+    terms: Yup.bool().test('terms', 'You have to agree to our Terms and Conditions!', value => value === true),
+    role: Yup.string().required('Please select an option')
   }),
   
   handleSubmit(values, { resetForm, setErrors, setSubmitting }) {
@@ -76,7 +86,7 @@ export default withFormik({
           resetForm()
           console.log(response);
           setSubmitting(false);
-          alert(`Registration success! Name: ${values.name} Email: ${values.email}`)
+          alert(`Registration success! Name: ${values.name} Email: ${values.email} Role: ${values.role}`)
         })
         .catch(error => {
           console.log(error);
