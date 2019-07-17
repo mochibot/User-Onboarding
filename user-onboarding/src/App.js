@@ -1,6 +1,7 @@
 import React from 'react';
 import UseForm from './components/UserForm';
-import './App.css';
+import image from './images/login.svg';
+import './App.scss';
 
 function App() {
   return (
@@ -9,6 +10,7 @@ function App() {
         <UseForm />
       </div>
       <div className='App-right'>
+        <img src={image} alt='login page'/>
       </div>
     </div>
   );

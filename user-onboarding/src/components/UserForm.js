@@ -5,35 +5,37 @@ import axios from 'axios';
 
 const UserForm = ({ values, errors, touched, isSubmitting }) => {
   return (
-    <div>
-      <h2>Create your account now</h2>
+    <div className='form-container'>
+      <h2>Create your account today</h2>
       <Form>
-        <div>
-          <p>Full name:</p>
+        <div className='form-field'>
+          <label>Full name:</label>
           <Field name='name' placeholder='Enter name...'></Field>
-          {touched.name && errors.name && <p>{errors.name}</p>}
+          {touched.name && errors.name && <p className='form-error'>{errors.name}</p>}
         </div>
-        <div>
-          <p>Email:</p>
+        <div className='form-field'>
+          <label>Email:</label>
           <Field name='email' placeholder='Enter email...'></Field>
-          {touched.email && errors.email && <p>{errors.email}</p>}
+          {touched.email && errors.email && <p className='form-error'>{errors.email}</p>}
         </div>
-        <div>
-          <p>Password:</p>
-          <Field name='password' placeholder='Enter password...'></Field>
-          {touched.password && errors.password && <p>{errors.password}</p>}
+        <div className='form-field'>
+          <label>Password:</label>
+          <Field type='password' name='password' placeholder='Enter password...'></Field>
+          {touched.password && errors.password && <p className='form-error'>{errors.password}</p>}
         </div>
-        <div>
-          <p>Confirm password:</p>
+        {/*
+        <div className='form-field'>
+          <label>Confirm password:</label>
           <Field name='passwordConfirmation' placeholder='Confirm password...'></Field>
-          {touched.passwordConfirmation && errors.passwordConfirmation && <p>{errors.passwordConfirmation}</p>}
+          {touched.passwordConfirmation && errors.passwordConfirmation && <p className='form-error'>{errors.passwordConfirmation}</p>}
         </div>
-        <div>
+        */}
+        <div className='form-terms'>
           <label>
             <Field type='checkbox' name='terms' checked={values.terms}></Field>
-            Agree to Terms and Services
+            Agree to Terms and Conditions
           </label>
-          {touched.terms && errors.terms && <p>{errors.terms}</p>} 
+          {touched.terms && errors.terms && <p className='form-error'>{errors.terms}</p>} 
         </div>
         <button disabled={isSubmitting}>Submit</button>
       </Form>
@@ -57,8 +59,8 @@ export default withFormik({
     email: Yup.string().email('Not a valid email').required('Email is required'),
     password: Yup.string().min(6, 'Password must contain at least 6 characters').required('Password is required'),
     /*passwordConfirmation: Yup.string().oneOf([values.password], 'Passwords are not the same!')
-    .required('Password confirmation is required!'),*/
-    terms: Yup.bool().test('terms', 'You have to agree with our Terms and Conditions!', value => value === true)
+    .required('Password confirmation is required!'), */
+    terms: Yup.bool().test('terms', 'You have to agree to our Terms and Conditions!', value => value === true)
   }),
   
   handleSubmit(values, { resetForm, setErrors, setSubmitting }) {
@@ -71,8 +73,8 @@ export default withFormik({
       setSubmitting(true);
       axios.post('https://reqres.in/api/users', values)
         .then(response => {
-          console.log(response);
           resetForm()
+          console.log(response);
           setSubmitting(false);
           alert(`Registration success! Name: ${values.name} Email: ${values.email}`)
         })
